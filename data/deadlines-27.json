@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-03-08T10:16:18.078079+09:00",
+  "updated_at": "2026-03-08T10:25:51.344795+09:00",
   "grad_year": 27,
   "companies": [
     {
@@ -31,15 +31,7 @@
       "company_id": "nomura_securities",
       "company_name": "野村證券",
       "industry": "証券",
-      "deadlines": [
-        {
-          "type": "本選考",
-          "deadline": "2025-03-11",
-          "label": "2027年度新卒採用 一次締切",
-          "source_url": "https://www.nomura.co.jp/recruit/",
-          "fetched_at": "2026-03-08T10:16:13.442621+09:00"
-        }
-      ]
+      "deadlines": []
     }
   ]
 }
