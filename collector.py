@@ -85,13 +85,20 @@ def fetch_html(url: str, max_retries: int = 3) -> str | None:
     return None
 
 
-def extract_text(html: str, char_limit: int = 8000) -> str:
-    """HTML から不要タグを除去してプレーンテキストを取得する"""
+def extract_text(html: str, char_limit: int = 15000) -> str:
     soup = BeautifulSoup(html, "html.parser")
-    for tag in soup(["script", "style", "noscript"]):
+    for tag in soup(["script", "style", "noscript", "header", "footer", "nav"]):
         tag.decompose()
-    lines = [ln.strip() for ln in soup.get_text(separator="\n").splitlines() if ln.strip()]
-    return "\n".join(lines)[:char_limit]
+    # title と meta description も含める
+    title = soup.title.string.strip() if soup.title else ""
+    meta_desc = ""
+    meta = soup.find("meta", attrs={"name": "description"})
+    if meta:
+        meta_desc = meta.get("content", "")
+    body_lines = [ln.strip() for ln in soup.get_text(separator="\n").splitlines() if ln.strip()]
+    body_text = "\n".join(body_lines)
+    combined = f"【ページタイトル】{title}\n【概要】{meta_desc}\n\n{body_text}"
+    return combined[:char_limit]
 
 
 # ──────────────────────────────────
@@ -100,14 +107,17 @@ def extract_text(html: str, char_limit: int = 8000) -> str:
 
 PROMPT_TEMPLATE = """\
 以下は企業の採用ページから抽出したテキストです。
-採用に関する締切日情報を抽出し、以下のJSON形式のみで返してください（説明文・コードブロック不要）。
+2027年卒（2026年〜2027年に実施）の採用に関する締切・日程情報を全て抽出してください。
 
-{{"deadlines": [{{"type": "本選考|サマーインターン|オータムインターン|ウィンターインターン|早期選考|通年採用", "deadline": "YYYY-MM-DD or null", "label": "任意のラベル"}}]}}
+返却形式：以下のJSONのみ（説明文・コードブロック不要）
+{{"deadlines": [{{"type": "本選考|サマーインターン|オータムインターン|ウィンターインターン|早期選考|通年採用|説明会|OB訪問", "deadline": "YYYY-MM-DD or null", "label": "具体的なラベル（例：ES提出締切、エントリー締切、説明会申込締切など）"}}]}}
 
-ルール:
-- type は上記の選択肢から最も適切なものを選ぶこと
-- deadline が不明・記載なしの場合は null にすること
-- 採用情報がない場合は {{"deadlines": []}} を返すこと
+抽出ルール：
+- 「エントリー」「ES提出」「応募締切」「説明会」「選考」等の日付を全て対象とする
+- 「受付中」「随時」「未定」など具体的な日付がない場合は deadline を null にする
+- 2025年以前の過去の日程は除外する
+- 採用情報・日程が一切ない場合は {{"deadlines": []}} を返す
+- type は上記の選択肢から最も近いものを選ぶ
 
 テキスト:
 {text}
