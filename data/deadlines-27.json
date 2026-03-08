@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-03-08T09:58:07.189825+09:00",
+  "grad_year": 27,
+  "companies": [
+    {
+      "company_id": "mitsubishi_corp",
+      "company_name": "三菱商事",
+      "industry": "総合商社",
+      "deadlines": []
+    },
+    {
+      "company_id": "itochu",
+      "company_name": "伊藤忠商事",
+      "industry": "総合商社",
+      "deadlines": []
+    },
+    {
+      "company_id": "toyota",
+      "company_name": "トヨタ自動車",
+      "industry": "自動車",
+      "deadlines": []
+    },
+    {
+      "company_id": "sony_group",
+      "company_name": "ソニーグループ",
+      "industry": "電機メーカー",
+      "deadlines": []
+    },
+    {
+      "company_id": "nomura_securities",
+      "company_name": "野村證券",
+      "industry": "証券",
+      "deadlines": []
+    }
+  ]
+}
